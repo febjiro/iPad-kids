@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5dce8">
+<title>Toky's iPad</title>
+<style>
+:root{--ink:#252332;--glass:rgba(255,255,255,.38);--line:rgba(255,255,255,.48);--pink:#f7d9e7}
+*{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;color:var(--ink);background:#e8dce9}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#device{position:relative;width:100%;height:100%;overflow:hidden;background:#f5dce8;isolation:isolate}
+.wallpaper{position:absolute;inset:0;background:radial-gradient(ellipse at 18% 15%,#fff8f3 0,transparent 36%),radial-gradient(ellipse at 90% 85%,#d9c7f2 0,transparent 37%),linear-gradient(145deg,#f8dce8,#e8d9f2 55%,#f7e9dd);z-index:-2}
+.wallpaper:before,.wallpaper:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);opacity:.6}
+.wallpaper:before{width:55vw;height:55vw;max-width:500px;max-height:500px;background:#fff1f5;top:-22%;right:-10%}
+.wallpaper:after{width:65vw;height:65vw;max-width:600px;max-height:600px;background:#f3bfd8;bottom:-40%;left:-15%}
+.status{position:absolute;top:0;left:0;right:0;height:34px;padding:9px 24px 0;display:flex;justify-content:space-between;align-items:flex-start;font-size:13px;font-weight:650;z-index:5}
+.status-right{display:flex;gap:7px;align-items:center}.wifi{font-size:14px}.battery{width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative;padding:1.5px}.battery:before{content:"";display:block;width:75%;height:100%;background:currentColor;border-radius:1px}.battery:after{content:"";position:absolute;width:2px;height:4px;background:currentColor;right:-4px;top:2px;border-radius:0 2px 2px 0}
+.home{height:100%;display:flex;flex-direction:column;padding:clamp(48px,7vh,80px) clamp(20px,5vw,70px) 20px;gap:clamp(16px,3vh,30px)}
+.widgets{display:grid;grid-template-columns:minmax(180px,1fr) minmax(170px,.8fr);gap:16px;max-width:700px}
+.widget{border:1px solid var(--line);background:rgba(255,255,255,.27);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:24px;padding:18px 20px;box-shadow:0 10px 35px #8c6b8720}
+.clock{font-size:clamp(42px,6vw,66px);font-weight:300;letter-spacing:-3px;line-height:1}.date{font-size:14px;margin-top:5px;font-weight:600}.quote{font-size:15px;line-height:1.5}.quote small{display:block;margin-top:8px;opacity:.7}
+.grid{display:grid;grid-template-columns:repeat(6,minmax(52px,1fr));gap:clamp(15px,3.2vh,30px) clamp(10px,3vw,30px);max-width:760px;align-content:start}
+.app-icon{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:7px;color:#292432;text-shadow:0 1px 6px #fff8;min-width:0}
+.icon{width:clamp(48px,6.5vw,68px);height:clamp(48px,6.5vw,68px);border-radius:22%;display:grid;place-items:center;font-size:clamp(26px,3.4vw,38px);box-shadow:0 5px 12px #6d4c6028,inset 0 1px 1px #ffffff99;border:1px solid #ffffff77;transition:transform .15s}
+.app-icon:active .icon{transform:scale(.91)}
+.label{font-size:12px;font-weight:550;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.photos{background:linear-gradient(145deg,#fff,#f7e9f2)}.messages{background:linear-gradient(145deg,#75e67d,#19bb62)}.notes{background:linear-gradient(145deg,#fff,#f6e4a1)}.calendar{background:linear-gradient(145deg,#fff,#fce7e9)}.music{background:linear-gradient(145deg,#ffb8d5,#f25e91)}.camera{background:linear-gradient(145deg,#6e6e78,#25252b)}.diary{background:linear-gradient(145deg,#e5c6ff,#b58de9)}.toky{background:linear-gradient(145deg,#ffc4de,#ff8dbd)}.safari{background:linear-gradient(145deg,#e8f9ff,#78c9ff)}.settings{background:linear-gradient(145deg,#f6f6f8,#b7bbc6)}.files{background:linear-gradient(145deg,#dff4ff,#72b9f5)}.mail{background:linear-gradient(145deg,#e7f5ff,#73b9ff)}
+.dock-wrap{margin-top:auto;display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+.dock{display:flex;gap:clamp(10px,2vw,22px);padding:10px 18px;background:rgba(255,255,255,.35);border:1px solid #ffffff80;border-radius:26px;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 8px 30px #70536b20}
+.dock .icon{width:clamp(48px,6.2vw,64px);height:clamp(48px,6.2vw,64px)}
+/* app windows */
+.app-window{position:absolute;inset:0;z-index:10;background:#f8f7fa;display:none;flex-direction:column;animation:open .22s ease-out}
+.app-window.active{display:flex}@keyframes open{from{opacity:.4;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+.app-top{height:58px;display:flex;align-items:center;gap:12px;padding:env(safe-area-inset-top) 18px 0;border-bottom:1px solid #e8e4eb;background:#fbfafc;flex-shrink:0}
+.back{border:0;background:#eee6f0;border-radius:20px;padding:8px 13px;color:#6d4a7d;font-weight:600}.app-title{font-size:18px;font-weight:700;flex:1}.app-content{overflow:auto;padding:22px;max-width:900px;width:100%;margin:0 auto;flex:1}
+.section-title{font-size:22px;font-weight:750;margin:0 0 7px}.muted{color:#777281;font-size:14px;line-height:1.5}
+.card{background:#fff;border:1px solid #eee8f0;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 4px 14px #3e284008}
+.card h3{margin:0 0 8px;font-size:16px}.card p{margin:5px 0;line-height:1.55}.pill{display:inline-block;border-radius:20px;background:#f7e7f1;color:#9b4c7c;padding:5px 10px;font-size:12px;margin:3px 4px 3px 0}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.photo{aspect-ratio:1;border-radius:15px;display:grid;place-items:center;font-size:42px;background:linear-gradient(145deg,#ffe5f0,#e8dafa);cursor:pointer;border:0}
+.chat{display:flex;flex-direction:column;gap:10px}.bubble{padding:11px 14px;border-radius:18px;max-width:82%;line-height:1.45;font-size:15px}.bubble.them{background:#ece9ef;align-self:flex-start;border-bottom-left-radius:5px}.bubble.me{background:#a9e9b2;align-self:flex-end;border-bottom-right-radius:5px}
+.note-row{padding:15px 2px;border-bottom:1px solid #eee8f0;cursor:pointer}.note-row strong{display:block;margin-bottom:4px}.note-row span{color:#7d7785;font-size:13px}
+.track{display:flex;align-items:center;gap:14px}.album{width:72px;height:72px;border-radius:15px;background:linear-gradient(135deg,#f8c8de,#d9c7f6);display:grid;place-items:center;font-size:32px}
+.primary{border:0;border-radius:12px;background:#c47ca9;color:white;padding:10px 15px;font-weight:650;margin-top:10px}.home-indicator{position:absolute;z-index:30;bottom:5px;left:50%;transform:translateX(-50%);width:135px;height:5px;border-radius:9px;background:#24212a;opacity:.65}
+.toast{position:absolute;z-index:50;bottom:35px;left:50%;transform:translateX(-50%);background:#292532;color:white;padding:10px 16px;border-radius:14px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap}.toast.show{opacity:1}
+@media(max-width:650px){.home{padding:48px 16px 18px;gap:20px}.widgets{grid-template-columns:1fr 1fr;gap:9px}.widget{padding:13px;border-radius:19px}.clock{font-size:42px}.quote{font-size:12px}.grid{grid-template-columns:repeat(4,minmax(45px,1fr));gap:19px 7px}.icon{width:54px;height:54px;font-size:29px;border-radius:15px}.label{font-size:11px}.dock{gap:12px;padding:8px 13px;border-radius:22px}.dock .icon{width:48px;height:48px}.home{padding-top:54px}.app-content{padding:18px}.app-top{height:56px}}
+@media(max-height:560px){.home{padding-top:40px;gap:12px}.widgets{max-width:560px}.widget{padding:10px 14px}.clock{font-size:36px}.grid{gap:12px 18px}.icon{width:45px;height:45px;font-size:25px}.label{font-size:10px}.dock .icon{width:43px;height:43px}}
+</style>
+</head>
+<body>
+<div id="device">
+  <div class="wallpaper"></div>
+  <div class="status"><span id="statusTime">9:41</span><div class="status-right"><span>●●●</span><span class="wifi">◔</span><span class="battery"></span></div></div>
+  <main class="home" id="home">
+    <section class="widgets">
+      <div class="widget"><div class="clock" id="clock">9:41</div><div class="date" id="date">Monday, October 26</div></div>
+      <div class="widget quote">🍓 <b>Toky's little space</b><br>วันนี้มีอะไรน่ารัก ๆ เกิดขึ้นบ้างนะ?<small>— บันทึกของโทกี้</small></div>
+    </section>
+    <section class="grid" id="appGrid"></section>
+    <div class="dock-wrap"><div class="dock" id="dock"></div></div>
+  </main>
+  <section class="app-window" id="appWindow" aria-label="แอปที่เปิดอยู่">
+    <header class="app-top"><button class="back" id="backBtn">‹ Home</button><div class="app-title" id="appTitle">Photos</div><span id="appEmoji">📷</span></header>
+    <div class="app-content" id="appContent"></div>
+  </section>
+  <div class="home-indicator"></div>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+const apps=[
+ {id:'photos',name:'Photos',emoji:'🌈',cls:'photos',dock:true},
+ {id:'messages',name:'Messages',emoji:'💬',cls:'messages',dock:true},
+ {id:'calendar',name:'Calendar',emoji:'📅',cls:'calendar'},
+ {id:'camera',name:'Camera',emoji:'📷',cls:'camera'},
+ {id:'notes',name:'Notes',emoji:'📝',cls:'notes'},
+ {id:'music',name:'Music',emoji:'🎵',cls:'music',dock:true},
+ {id:'diary',name:'Diary',emoji:'📔',cls:'diary'},
+ {id:'drawing',name:'Drawing',emoji:'🎨',cls:'diary'},
+ {id:'shopping',name:'Shopping',emoji:'🛍️',cls:'photos'},
+ {id:'files',name:'Files',emoji:'📁',cls:'files'},
+ {id:'safari',name:'Safari',emoji:'🧭',cls:'safari',dock:true},
+ {id:'toky',name:'Toky',emoji:'🦊',cls:'toky'},
+ {id:'settings',name:'Settings',emoji:'⚙️',cls:'settings'}
+];
+const $=id=>document.getElementById(id);
+const appGrid=$('appGrid'),dock=$('dock');
+function iconButton(app){const b=document.createElement('button');b.className='app-icon';b.innerHTML=`<span class="icon ${app.cls}">${app.emoji}</span><span class="label">${app.name}</span>`;b.onclick=()=>openApp(app.id);return b}
+apps.filter(a=>!a.dock).forEach(a=>appGrid.appendChild(iconButton(a)));
+apps.filter(a=>a.dock).forEach(a=>dock.appendChild(iconButton(a)));
+function updateTime(){const d=new Date();const t=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});$('clock').textContent=t;$('statusTime').textContent=t;$('date').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+updateTime();setInterval(updateTime,15000);
+const viewed=JSON.parse(localStorage.getItem('toky-ipad-viewed')||'[]');
+function markViewed(id){if(!viewed.includes(id)){viewed.push(id);localStorage.setItem('toky-ipad-viewed',JSON.stringify(viewed))}}
+const pages={
+ photos:`<h1 class="section-title">Photos</h1><p class="muted">รูปภาพของโทกี้ · ลองแตะรูปเพื่อดูรายละเอียด</p><div class="photo-grid">
+ <button class="photo" onclick="showToast('รูปโปรดของโทกี้ 🩷')">🦊</button><button class="photo" onclick="showToast('วันนี้ท้องฟ้าสวยมาก ☁️')">☁️</button><button class="photo" onclick="showToast('เก็บไว้ดูตอนคิดถึง 🍓')">🍓</button><button class="photo" onclick="showToast('รูปนี้ถ่ายตอนแอบกินขนม 🍰')">🍰</button><button class="photo" onclick="showToast('รูปวาดที่ถ่ายเก็บไว้ 🎨')">🎨</button><button class="photo" onclick="showToast('ความทรงจำดี ๆ ✨')">✨</button></div><div class="card"><h3>📂 อัลบั้ม</h3><p>รายการโปรด · 12 รูป</p><p>วันสบาย ๆ · 8 รูป</p><p>🍓 ของอร่อย · 6 รูป</p></div>`,
+ messages:`<h1 class="section-title">Messages</h1><p class="muted">บทสนทนาล่าสุด</p><div class="card" onclick="openChat('friend')"><h3>🐰 มินนี่</h3><p class="muted">พรุ่งนี้เอาขนมมาแบ่งกันนะ!</p><span class="pill">วันนี้ · 14:32</span></div><div class="card" onclick="openChat('kong')"><h3>🩷 น้องก้อง🩷</h3><p class="muted">โทกี้ วันนี้เป็นเด็กดีไหมครับ</p><span class="pill">วันนี้ · 13:08</span></div><div class="card" onclick="openChat('tho')"><h3>💙 พี่โท</h3><p class="muted">ฝากดูแลตัวเองด้วยนะ</p><span class="pill">เมื่อวาน</span></div>`,
+ notes:`<h1 class="section-title">Notes</h1><p class="muted">โน้ตที่บันทึกไว้ในเครื่อง</p><div class="note-row" onclick="noteDetail(0)"><strong>🍓 ของที่ต้องซื้อ</strong><span>สตรอว์เบอร์รี · ขนม · สมุดวาดรูป</span></div><div class="note-row" onclick="noteDetail(1)"><strong>🌤️ สิ่งที่ต้องทำวันนี้</strong><span>เก็บห้อง / วาดรูป / พักผ่อน</span></div><div class="note-row" onclick="noteDetail(2)"><strong>🔒 โน้ตที่ล็อกไว้</strong><span>แตะเพื่อใส่รหัสผ่าน</span></div>`,
+ calendar:`<h1 class="section-title">Calendar</h1><div class="card"><span class="pill">TODAY</span><h2 id="calDate">วันดี ๆ ของโทกี้</h2><p>10:00 — วาดรูปเล่น 🎨</p><p>13:00 — พักกินขนม 🍰</p><p>17:30 — เดินเล่นชมพระอาทิตย์ตก 🌇</p></div><div class="card"><h3>พรุ่งนี้</h3><p>นัดเจอมินนี่ 🐰</p></div>`,
+ camera:`<h1 class="section-title">Camera</h1><div class="card" style="text-align:center;padding:35px 15px;background:linear-gradient(145deg,#25232c,#5c5265);color:white"><div style="font-size:70px">📷</div><p>กล้องจำลองของโทกี้</p><p style="opacity:.7;font-size:13px">ไม่มีการเปิดกล้องจริงของอุปกรณ์</p><button class="primary" onclick="takePhoto()">ถ่ายรูปเล่น</button><div id="shot" style="font-size:42px;margin-top:12px"></div></div>`,
+ music:`<h1 class="section-title">Music</h1><p class="muted">เพลงที่โทกี้ชอบเปิดฟัง</p><div class="card track"><div class="album">🍓</div><div><h3>Strawberry Day</h3><p class="muted">Toky's cozy playlist</p><button class="primary" onclick="toggleMusic(this)">▶ เล่นตัวอย่าง</button></div></div><div class="card track"><div class="album">☁️</div><div><h3>Cloud Nap</h3><p class="muted">เพลงสำหรับวันขี้เกียจ</p><button class="primary" onclick="showToast('เพิ่มลงคิวเพลงแล้ว 🎵')">＋ เพิ่มเข้าคิว</button></div></div><div class="card track"><div class="album">🌙</div><div><h3>Little Night</h3><p class="muted">ฟังก่อนเข้านอน</p><button class="primary" onclick="showToast('เพลงนี้ยังไม่พร้อมเล่น')">▶ เล่นตัวอย่าง</button></div></div>`,
+ diary:`<h1 class="section-title">Diary</h1><p class="muted">บันทึกส่วนตัวของโทกี้</p><div class="card"><span class="pill">วันนี้</span><h3>วันที่ธรรมดาที่พิเศษนิดหน่อย 🍓</h3><p>วันนี้อากาศดีมากครับ เลยอยากวาดรูปแล้วก็หาอะไรอร่อย ๆ กิน บางทีวันธรรมดาก็มีความสุขได้เหมือนกันนะ kub.</p><p class="muted">— โทกี้</p></div><div class="card"><span class="pill">เมื่อวาน</span><h3>เรื่องเล็ก ๆ ที่ทำให้ยิ้มได้</h3><p>มีคนใจดีกับโทกี้มากเลย วันนี้เลยอารมณ์ดีเป็นพิเศษครับ</p></div><button class="primary" onclick="showToast('บันทึกใหม่กำลังจะมาในเวอร์ชันถัดไป ✍️')">＋ เขียนบันทึกใหม่</button>`,
+ drawing:`<h1 class="section-title">Drawing</h1><p class="muted">สมุดวาดรูปของโทกี้</p><div class="photo-grid"><button class="photo" onclick="showToast('ภาพร่างน้องจิ้งจอก 🦊')">🦊</button><button class="photo" onclick="showToast('วาดสตรอว์เบอร์รีไว้ 🍓')">🍓</button><button class="photo" onclick="showToast('ก้อนเมฆนุ่ม ๆ ☁️')">☁️</button></div><div class="card"><h3>ไอเดียภาพถัดไป</h3><p>วาดภาพวันที่ทุกคนมาอยู่ด้วยกัน 🩷</p></div>`,
+ shopping:`<h1 class="section-title">Shopping</h1><p class="muted">Wish list ของโทกี้</p><div class="card"><h3>🍓 สตรอว์เบอร์รี</h3><p>อยากกินแบบหวาน ๆ สักกล่อง</p><button class="primary" onclick="toggleWish(this)">♡ อยากได้</button></div><div class="card"><h3>🎨 สมุดวาดรูปเล่มใหม่</h3><p>เอาไว้เก็บภาพวาดที่ชอบ</p><button class="primary" onclick="toggleWish(this)">♡ อยากได้</button></div><div class="card"><h3>🧸 หมอนนุ่ม ๆ</h3><p>เอาไว้นอนกอดตอนง่วง</p><button class="primary" onclick="toggleWish(this)">♡ อยากได้</button></div>`,
+ files:`<h1 class="section-title">Files</h1><p class="muted">เลือกดูไฟล์ในเครื่องจำลอง</p><div class="card" onclick="showToast('โฟลเดอร์ Photos มีรูป 26 รูป 📷')">📁 <b>Photos</b><p class="muted">26 รายการ</p></div><div class="card" onclick="showToast('โฟลเดอร์ Drawings มีภาพวาด 8 ภาพ 🎨')">📁 <b>Drawings</b><p class="muted">8 รายการ</p></div><div class="card" onclick="showToast('มีไฟล์หนึ่งรายการที่ยังล็อกอยู่ 🔒')">📁 <b>Private</b><p class="muted">🔒 ต้องใช้รหัสผ่าน</p></div>`,
+ safari:`<h1 class="section-title">Safari</h1><div class="card"><div style="border:1px solid #ddd5e3;border-radius:14px;padding:12px;color:#7d7285">🔍 ค้นหาเว็บจำลอง</div><p>รายการที่เข้าบ่อย</p><button class="primary" onclick="showToast('เปิดเว็บ Strawberry Club 🍓')">🍓 Strawberry Club</button><button class="primary" onclick="showToast('เปิดเว็บวาดรูปสำหรับเด็ก 🎨')">🎨 Tiny Art</button><p class="muted">เบราว์เซอร์นี้เป็นส่วนหนึ่งของเกม ไม่ได้เชื่อมต่อเว็บไซต์จริง</p></div>`,
+ toky:`<div style="text-align:center;padding:12px"><div style="font-size:90px">🦊</div><h1 class="section-title">Mr. Toky</h1><p class="muted">เจ้าของ iPad เครื่องนี้ 🍓</p></div><div class="card"><h3>สิ่งที่ชอบ</h3><span class="pill">สตรอว์เบอร์รี</span><span class="pill">วาดรูป</span><span class="pill">งีบหลับ</span><span class="pill">คนใจดี</span></div><div class="card"><h3>เกี่ยวกับโทกี้</h3><p>เป็นจิ้งจอกสีชมพูที่ชอบเก็บเรื่องเล็ก ๆ ไว้ใน iPad ครับ บางอย่างก็อยากเล่าให้ฟัง… แต่บางอย่างขอเก็บไว้ก่อนนะ kub.</p></div><div class="card"><h3>🔎 ความคืบหน้าการสำรวจ</h3><p id="progressText"></p></div>`,
+ settings:`<h1 class="section-title">Settings</h1><div class="card"><h3>โหมดหน้าจอ</h3><p>วอลเปเปอร์: Toky's pastel world</p><button class="primary" onclick="changeWallpaper()">เปลี่ยนวอลเปเปอร์</button></div><div class="card"><h3>ข้อมูลเครื่อง</h3><p>ชื่อเครื่อง: Toky's iPad</p><p>เวอร์ชัน: Demo 1.0</p><p class="muted">นี่คือเกมจำลอง ไม่ใช่ระบบปฏิบัติการ iPadOS จริง</p></div><div class="card"><h3>ความคืบหน้า</h3><p id="settingsProgress"></p><button class="primary" onclick="resetProgress()">รีเซ็ตความคืบหน้า</button></div>`
+};
+function openApp(id){const app=apps.find(a=>a.id===id);if(!app)return;markViewed(id);$('home').style.display='none';$('appWindow').classList.add('active');$('appTitle').textContent=app.name;$('appEmoji').textContent=app.emoji;$('appContent').innerHTML=pages[id]||'<p>ยังไม่มีข้อมูลในแอปนี้</p>';if(id==='toky')$('progressText').textContent=`เปิดดูแล้ว ${viewed.length} จาก ${apps.length} แอป`;if(id==='settings')$('settingsProgress').textContent=`สำรวจแล้ว ${viewed.length} จาก ${apps.length} แอป`;if(id==='calendar')$('calDate').textContent=new Date().toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long'});if(id==='notes'){}}
+function goHome(){$('appWindow').classList.remove('active');$('home').style.display='flex'}
+$('backBtn').onclick=goHome;
+function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2100)}
+function openChat(who){const content=$('appContent');let title='',msgs=[];if(who==='friend'){title='🐰 มินนี่';msgs=[['them','พรุ่งนี้เอาขนมมาแบ่งกันนะ!'],['me','ได้เลยครับ โทกี้จะเลือกอันอร่อยที่สุดไป'],['them','ห้ามแอบกินก่อนถึงนะ 555']]}else if(who==='kong'){title='🩷 น้องก้อง🩷';msgs=[['them','โทกี้ วันนี้เป็นเด็กดีไหมครับ'],['me','เป็นครับ! วันนี้เก็บห้องด้วยนะ kub'],['them','เก่งมากเลย ไว้มีรางวัลให้ 🍓'],['me','โทกี้จะจำคำนี้ไว้เลยครับ…']]}else{title='💙 พี่โท';msgs=[['them','ฝากดูแลตัวเองด้วยนะ'],['me','รับทราบครับ โทกี้ดูแลตัวเองเก่งอยู่แล้ว'],['them','แน่ใจนะ 😌'],['me','...จะพยายามครับ kub']]}$('appTitle').textContent=title;content.innerHTML='<div class="chat">'+msgs.map(m=>`<div class="bubble ${m[0]}">${m[1]}</div>`).join('')+'</div><p class="muted" style="text-align:center;margin-top:18px">— จบบทสนทนาที่บันทึกไว้ —</p>'}
+function noteDetail(n){const content=$('appContent');if(n===2){const code=prompt('ใส่รหัสผ่าน 4 หลัก (คำใบ้: วันเกิดตัวละครในเกม)');if(code==='0214'){content.innerHTML='<h1 class="section-title">🔓 โน้ตส่วนตัว</h1><div class="card"><h3>เรื่องที่ยังไม่กล้าพูด</h3><p>บางครั้งโทกี้ก็ทำเป็นเข้มแข็ง ทั้งที่จริง ๆ แค่อยากให้มีใครสักคนถามว่า วันนี้เหนื่อยไหมครับ</p><p class="muted">อย่าบอกใครนะ kub.</p></div>';markViewed('secret-note')}else if(code!==null)showToast('รหัสไม่ถูกต้อง ลองใหม่ได้นะ 🔒');return}const data=n===0?['🍓 ของที่ต้องซื้อ','สตรอว์เบอร์รี\\nขนม\\nสมุดวาดรูป']:['🌤️ สิ่งที่ต้องทำวันนี้','เก็บห้อง\\nวาดรูป\\nพักผ่อนให้เพียงพอ'];content.innerHTML=`<h1 class="section-title">${data[0]}</h1><div class="card"><p style="white-space:pre-line">${data[1]}</p></div><button class="primary" onclick="openApp('notes')">‹ กลับไป Notes</button>`}
+function takePhoto(){const choices=['🦊','🍓','🌸','☁️','🍰','✨'];$('shot').textContent=choices[Math.floor(Math.random()*choices.length)];showToast('บันทึกรูปลงอัลบั้มจำลองแล้ว 📷')}
+function toggleMusic(btn){btn.textContent=btn.textContent.includes('เล่น')?'Ⅱ กำลังเล่น (จำลอง)':'▶ เล่นตัวอย่าง';showToast('ตัวอย่างการเล่นเพลงในเกม 🎵')}
+function toggleWish(btn){btn.textContent=btn.textContent.includes('อยากได้')?'♥ เพิ่มในรายการแล้ว':'♡ อยากได้';showToast('บันทึกรายการที่อยากได้แล้ว 🛍️')}
+let wallpaper=0;function changeWallpaper(){wallpaper++;const colors=[['#f8dce8','#e8d9f2','#f7e9dd'],['#d9eff5','#d8c9f1','#fff0dc'],['#f9e3b7','#f5c7d8','#d6e7f6']][wallpaper%3];document.querySelector('.wallpaper').style.background=`radial-gradient(ellipse at 18% 15%,${colors[2]} 0,transparent 36%),radial-gradient(ellipse at 90% 85%,${colors[1]} 0,transparent 37%),linear-gradient(145deg,${colors[0]},${colors[1]} 55%,${colors[2]})`;showToast('เปลี่ยนวอลเปเปอร์แล้ว ✨')}
+function resetProgress(){if(confirm('ต้องการรีเซ็ตความคืบหน้าการสำรวจหรือไม่?')){localStorage.removeItem('toky-ipad-viewed');viewed.length=0;showToast('รีเซ็ตความคืบหน้าแล้ว')}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'||e.key==='Backspace'){goHome()}});
+let startX=0;document.addEventListener('touchstart',e=>{startX=e.changedTouches[0].screenX},{passive:true});document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].screenX-startX;if($('appWindow').classList.contains('active')&&dx>120)goHome()},{passive:true});
+</script>
+</body>
+</html>
